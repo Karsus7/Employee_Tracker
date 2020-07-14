@@ -1,0 +1,26 @@
+{
+    "name": "employee_tracker",
+    "version": "1.0.0",
+    "description": "a CLI tool for managing and tracking employees",
+    "main": "employeeTracker.js",
+    "scripts": {
+        "start": "npm start",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Karsus7/Employee_Tracker.git"
+    },
+    "author": "William Broussard",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Karsus7/Employee_Tracker/issues"
+    },
+    "homepage": "https://github.com/Karsus7/Employee_Tracker#readme",
+    "dependencies": {
+        "console.table": "^0.10.0",
+        "dotenv": "^8.2.0",
+        "inquirer": "^7.1.0",
+        "mysql": "^2.18.1"
+    }
+}
