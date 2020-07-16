@@ -4,7 +4,7 @@
     "description": "a CLI tool for managing and tracking employees",
     "main": "employeeTracker.js",
     "scripts": {
-        "start": "npm start",
+        "start": "node exployeeTracker.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
