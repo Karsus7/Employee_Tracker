@@ -21,8 +21,6 @@ run schema.sql to set up database
 set up .env file
 run: node employeeTracker.js
 ```
-npm start
-```
 ## License
 MIT
 ## Contributing
@@ -31,4 +29,4 @@ MIT
 [William Broussard](https://github.com/Karsus7)
 
 ## Demo
-![CLI Demo]()
+![CLI Demo](Assets/Demonstration.gif)
