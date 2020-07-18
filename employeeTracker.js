@@ -1,9 +1,10 @@
-
 const queryHelper = require("./db/queryHelper.js");
 const questions = require("./questions.js");
 const cTable = require('console.table');
+// console.table changes how the tables look in the terminal
 
 // function which prompts the user for what action they want to take
+// makes the main menu work
 async function mainMenu() {
 
     const action = await questions.mainMenu();
@@ -104,8 +105,9 @@ async function viewBudgets(){
     mainMenu();
 }
 
-/*#  Add Functions
-##############################################################*/
+
+// Add Functions
+
 
 //Add employee call
 async function addEmployee(){
@@ -129,8 +131,8 @@ async function addDepartment(){
 }
 
 
-/*#  Delete Functions
-##############################################################*/
+//  Delete Functions
+
 
 // delete Employee
 async function deleteEmployee(){
@@ -153,8 +155,9 @@ async function deleteDepartment(){
     mainMenu();
 }
 
-/*#  update Functions
-##############################################################*/
+
+// Update Functions
+
 
 // Update Employee role
 async function updateEmployeeRole(){
@@ -173,9 +176,7 @@ async function updateEmployeeManager(){
 }
 
 
-/*#  First Call
-##############################################################*/
-
+// Opens main menu to start
 function main(){
     try{
         mainMenu();
@@ -184,8 +185,5 @@ function main(){
     }
 }
 
-/*##############################################################
-#  To Start
-##############################################################*/
-
+// Starts main function
 main();
