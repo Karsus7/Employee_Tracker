@@ -1,158 +1,164 @@
-const inquirer = require ("inquirer");
-const queryHelper = require("./db/queryHelper.js");
+const inquirer = require("inquirer");
 
-function mainMenu(){
-    return inquirer.prompt({
-        name: "action",
-        type: "list",
-        message: "What would you like to do?",
-        choices: [
-            "View All Employees",
-            "View All Employees by Department",
-            "View All Employees by Manager",
-            "Add Employee",
-            "Remove Employee",
-            "Update Employee Role",
-            "Update Employee Manager",
-
-            "View All Roles",
-            "Add Role",
-            "Remove Role",
-
-            "View All Departments",
-            "Add Department",
-            "Remove Department",
-
-            "View Budgets",
-
-            "Exit"]
-    });
-}
-
-/*==    Get Data from Database
-======================================= */
-// return the Department Name and ID as selected by the name
-async function getDepartment(){
-    const data = await queryHelper.getDepartments();
-
-    const inq = await inquirer.prompt({
-        name: "department",
-        type: "list",
-        message: "Which Department?",
-        choices: data.map(dept=>dept.name)
-    });
-
-    return data.find(dept => dept.name == inq.department);
-}
-
-// return the Role title and ID as selected by the name
-async function getRole(){
-    const data = await queryHelper.getRoles();
-
-    const inq = await inquirer.prompt({
-        name: "role",
-        type: "list",
-        message: "Which Role?",
-        choices: data.map(role=>role.title)
-    });
-
-    return data.find(role => role.title == inq.role);
-}
-
-async function getPerson(){
-    // get list of all employee names/ids
-    const data = await queryHelper.getEmployeeNames();
-
-    // display all names as choices
-    const inq = await inquirer.prompt({
-        name: "person",
-        type: "list",
-        message: "Which person?",
-        choices: data.map(person=>person.name)
-    });
-
-    // return the id associated with the given name
-    return data.find(person => person.name == inq.person);
-}
-
-
-// gather all the data for a new employee
-async function newEmployee(){
-    // get list of all employee names/ids
-    const names = await queryHelper.getEmployeeNames();
-    const roles = await queryHelper.getRoles();
-
-    // display all names as choices
-    const inq = await inquirer.prompt([
+function departmentPrompt(departmentNames) {
+    return inquirer.prompt([
         {
-            name:"firstName",
-            message: "What is their first name?",
-        },
-        {
-            name:"lastName",
-            message: "What is their last name?",
-        },
-        {
-            name: "role",
             type: "list",
-            message: "What is their role?",
-            choices: roles.map(role=>role.title)
-        },
+            name: "department",
+            message: "Choose a department to view:",
+            choices: departmentNames
+        }
+    ])
+}
+
+function managerPrompt(managerList) {
+    return inquirer.prompt([
         {
+            type: "list",
             name: "manager",
+            message: "Choose a manager to view:",
+            choices: managerList
+        }
+    ])
+}
+
+function addEmployeePrompt(roleTitles, managerList) {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "first_name",
+            message: "Please enter the employee's first name:"
+        },
+        {
+            type: "input",
+            name: "last_name",
+            message: "Please enter the employee's last name:"
+        },
+        {
             type: "list",
-            message: "Who is their Manager?",
-            choices: [...names.map(person=>person.name),"None"]
+            name: "role",
+            message: "Please select the employee's role:",
+            choices: roleTitles
+        },
+        {
+            type: "list",
+            name: "manager",
+            message: "Please select the employee's manager:",
+            choices: managerList
         }
-    ]);
-    
-    let managerId;
-    try{
-        managerId = names.find(person => person.name == inq.manager).id;
-    }
-    catch{managerId = null}
-
-    let roleId =  roles.find(role => role.title == inq.role).id;
-
-    let person = {firstName:inq.firstName, lastName:inq.lastName, role:roleId, manager:managerId};
-    return person;
+    ])
 }
 
-// return a new role object designed to match the mySQL insesrt into Roles
-async function makeRole(){
-    const department = await getDepartment();
-    const inq = await inquirer.prompt([
+function chooseEmployee(employeeNames) {
+    return inquirer.prompt([
         {
-            name:"title",
-            message:"Title for the Role?",   
-        }, 
-        {
-            name:"salary",
-            message:"Salary for the Role?",   
+            type: "list",
+            name: "employee",
+            message: "Please choose an employee to remove:",
+            choices: employeeNames
         }
-    ]);
-
-    return {...inq, department_id:department.id};
+    ])
 }
 
-// return a new role object designed to match the mySQL insesrt into Roles
-async function makeDepartment(){
-    const inq = await inquirer.prompt([
+function updateEmployeeRole(employeeNames, roleTitles) {
+    return inquirer.prompt([
         {
-            name:"name",
-            message:"What is the department name?",   
+            type: "list",
+            name: "employee",
+            message: "Please choose an employee to update:",
+            choices: employeeNames
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Please select the employee's role:",
+            choices: roleTitles
         }
-    ]);
-
-    return inq;
+    ])
 }
 
+function updateEmployeeManager(employeeNames, managerList) {
+    return inquirer.prompt([
+        {
+            type: "list",
+            name: "employee",
+            message: "Please choose the employee getting a different manager:",
+            choices: employeeNames
+        },
+        {
+            type: "list",
+            name: "manager",
+            message: "Please select the employee's new manager:",
+            choices: managerList
+        }
+    ])
+}
+
+function addRolePrompt(departmentNames) {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Please enter the new role's title:"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Please enter the new role's salary:"
+        },
+        {
+            type: "list",
+            name: "department",
+            message: "Please confirm which department this role will be part of:",
+            choices: departmentNames
+        }
+    ])
+}
+
+// This function is used exclusively in the "removeRole function"
+function chooseRole(roleTitles) {
+    return inquirer.prompt([
+        {
+            type: "list",
+            name: "role",
+            message: "Please choose which role you wish to remove:",
+            choices: roleTitles
+        }
+    ])
+}
+
+function addDepartmentPrompt() {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "department",
+            message: "Please enter a name for the new department:"
+        }
+    ])
+}
+
+function removeDepartmentPrompt(departmentNames) {
+    return inquirer.prompt([
+        {
+            // "list", provides a list of possible choices made up of existing department names
+            type: "list",
+            name: "department",
+            message: "Please choose which department to remove:",
+            choices: departmentNames
+        }
+    ])
+}
+
+// Exports all content into employee_tracker.js
 module.exports = {
-    mainMenu,
-    getRole,
-    getDepartment,
-    getPerson,
-    newEmployee,
-    makeRole,
-    makeDepartment
+    departmentPrompt,
+    managerPrompt,
+    addEmployeePrompt,
+    chooseEmployee,
+    updateEmployeeRole,
+    updateEmployeeManager,
+    addRolePrompt,
+    chooseRole,
+    addDepartmentPrompt,
+    removeDepartmentPrompt
 }

@@ -29,4 +29,4 @@ MIT
 [William Broussard](https://github.com/Karsus7)
 
 ## Demo
-![CLI Demo](Assets/Demonstration.gif)
+![CLI Demo]()
